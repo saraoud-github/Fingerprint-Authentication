@@ -1,4 +1,6 @@
 import os, shutil
+import cv2
+import numpy as np
 
 #Get all the files in the current working directory
 cwd = os.listdir(os.getcwd())
@@ -8,6 +10,9 @@ CLASSES_PATH = os.path.join(cwd[0], "Classes")
 
 #Create classes list
 categories = ['A', 'L', 'R', 'T', 'W']
+
+#Define kernel for dilation (morphological operation)
+kernel_dil = np.ones((5,5), np.uint8)
 
 # #Create a folder for each class
 # for category in categories:
@@ -26,3 +31,13 @@ categories = ['A', 'L', 'R', 'T', 'W']
 #             if i==2:
 #                 img = line[9:14:1]
 #                 shutil.copy(os.path.join(DATASET_PNG_PATH, img+'.png'), os.path.join(CLASSES_PATH, class_str))
+
+for category in categories:
+    path = os.path.join(CLASSES_PATH, category)
+    label = categories.index(category)
+    for img in os.listdir(path):
+        fingerprint_img = cv2.imread(img, 0)
+        img_dilation = cv2.dilate(fingerprint_img, kernel_dil, iterations=1)
+        cv2.imshow('Input', fingerprint_img)
+        cv2.imshow('Dilation', img_dilation)
+
