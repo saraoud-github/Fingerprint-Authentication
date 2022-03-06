@@ -1,6 +1,7 @@
 import os, shutil
 import cv2
 import numpy as np
+from PIL import Image
 
 #Get all the files in the current working directory
 cwd = os.listdir(os.getcwd())
@@ -12,7 +13,7 @@ CLASSES_PATH = os.path.join(cwd[0], "Classes")
 categories = ['A', 'L', 'R', 'T', 'W']
 
 #Define kernel for dilation (morphological operation)
-kernel_dil = np.ones((5,5), np.uint8)
+kernel= np.ones((5,5), np.uint8)
 
 # #Create a folder for each class
 # for category in categories:
@@ -32,12 +33,18 @@ kernel_dil = np.ones((5,5), np.uint8)
 #                 img = line[9:14:1]
 #                 shutil.copy(os.path.join(DATASET_PNG_PATH, img+'.png'), os.path.join(CLASSES_PATH, class_str))
 
-for category in categories:
-    path = os.path.join(CLASSES_PATH, category)
-    label = categories.index(category)
-    for img in os.listdir(path):
-        fingerprint_img = cv2.imread(img, 0)
-        img_dilation = cv2.dilate(fingerprint_img, kernel_dil, iterations=1)
-        cv2.imshow('Input', fingerprint_img)
-        cv2.imshow('Dilation', img_dilation)
+    # for category in categories:
+    #     path = os.path.join(CLASSES_PATH, category)
+    #     label = categories.index(category)
+   # for img in os.listdir(path):
+fingerprint_img = cv2.imread(os.path.join(CLASSES_PATH, 'A', 'Capture.jpg'), cv2.IMREAD_GRAYSCALE)
+img_erosion = cv2.erode(fingerprint_img, kernel, iterations=1)
+img_dilation = cv2.dilate(img_erosion, kernel, iterations=1)
+img_opening = cv2.morphologyEx(img_dilation, cv2.MORPH_OPEN, kernel)
+cv2.imshow('Input', fingerprint_img)
+cv2.imshow('Erosion', img_erosion)
+cv2.imshow('Dilation', img_dilation)
+cv2.imshow('Opening', img_opening)
+
+cv2.waitKey(0)
 
