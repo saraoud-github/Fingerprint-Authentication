@@ -38,9 +38,10 @@ kernel= np.ones((5,5), np.uint8)
 ####################################################################
 ##        READ TRAINING IMAGES AND EXTRACT FEATURES
 ################################################################
-image_dataset = pd.DataFrame(dtype='int8') # Dataframe to capture image features
+image_dataset = [] # Dataframe to capture image features
 dataset = []
 SIZE = 128
+image_count=1
 
 # img = cv2.imread(os.path.join(CLASSES_PATH,'A', 'f0005.png'))
 # img = cv2.resize(img, (SIZE, SIZE))
@@ -95,13 +96,15 @@ for category in categories:
                         fimg = cv2.filter2D(img_opening, cv2.CV_8UC3, kernel)
                         filtered_img = fimg.reshape(-1)
                         df[gabor_label] = filtered_img  # Labels columns as Gabor1, Gabor2, etc.
-                        print(gabor_label, ': theta=', theta, ': sigma=', sigma, ': lamda=', lamda, ': gamma=', gamma)
+                        #print(gabor_label, ': theta=', theta, ': sigma=', sigma, ': lamda=', lamda, ': gamma=', gamma)
                         num += 1  # Increment for gabor column label
 
         ######################################
         # Update dataframe for images to include details for each image in the loop
-        image_dataset = image_dataset.append(df)
-        dataset.append([image_dataset, label])
+        #image_dataset = image_dataset.append([df])
+        dataset.append([df, label])
+        print(image_count)
+        image_count +=1
 
 print('Done!')
 
